@@ -1,0 +1,32 @@
+
+> shell@0.0.0 dev
+> vite
+
+
+✘ vite v7.1.7 is not yet supported in the Community edition of Console Ninja.
+We are working hard on it for you https://tinyurl.com/3h9mtwra.
+
+Estimated release dates:
+  - Community users: around 22nd November, 2025 (subject to team availability)
+  - PRO users:       priority access is available now
+
+
+  VITE v7.1.7  ready in 280 ms
+
+  ➜  Local:   http://localhost:5000/
+  ➜  Network: use --host to expose
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+9  |  
+10 |  /* 🎯 FUENTES MODERNAS */
+11 |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |  
+13 |  /* 🎨 VARIABLES GLOBALES */
+18:01:47 [vite] (client) hmr update /src/App.tsx, /src/index.css
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+9  |  
+10 |  /* 🎯 FUENTES MODERNAS */
+11 |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |  
+13 |  /* 🎨 VARIABLES GLOBALES */

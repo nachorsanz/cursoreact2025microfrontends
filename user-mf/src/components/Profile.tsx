@@ -1,333 +1,474 @@
+/**
+ * 👤 PROFILE COMPONENT - PERFIL DE USUARIO MODERNO
+ */
+
 import { useState } from "react";
-import { User } from "../types";
+import type { User } from "../types";
 
 interface ProfileProps {
-  user: User;
-  onUpdateUser?: (updatedUser: User) => void;
+  user?: User;
   onLogout?: () => void;
 }
 
-export default function Profile({ user, onUpdateUser, onLogout }: ProfileProps) {
+export default function Profile({ user: propUser, onLogout }: ProfileProps) {
+  const [user] = useState<User>(
+    propUser || {
+      id: 1,
+      name: "Nacho RS",
+      email: "nacho@microstore.com",
+      avatar: "👤",
+      role: "Premium User",
+      preferences: {
+        theme: "light",
+        language: "es",
+        notifications: true,
+        emailUpdates: true,
+        pushNotifications: true,
+        marketingEmails: false,
+      },
+    },
+  );
+
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
+  const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
-    avatar: user.avatar || "👤",
   });
-  const [activeTab, setActiveTab] = useState<"profile" | "stats" | "orders">("profile");
 
-  const avatarOptions = ["👤", "👨‍💼", "👩‍💼", "👨‍💻", "👩‍💻", "👨‍🎨", "👩‍🎨", "👨‍🔬", "👩‍🔬"];
+  const [preferences, setPreferences] = useState(
+    user.preferences || {
+      theme: "light",
+      language: "es",
+      notifications: true,
+      emailUpdates: true,
+      pushNotifications: true,
+      marketingEmails: false,
+    },
+  );
 
   const handleSave = () => {
-    if (onUpdateUser) {
-      onUpdateUser({
-        ...user,
-        name: editData.name,
-        email: editData.email,
-        avatar: editData.avatar,
-      });
+    setIsEditing(false);
+    alert("✅ Perfil actualizado correctamente");
+  };
+
+  const handleLogout = () => {
+    if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      onLogout?.();
+      alert("👋 Sesión cerrada exitosamente");
     }
-    setIsEditing(false);
   };
 
-  const handleCancel = () => {
-    setEditData({
-      name: user.name,
-      email: user.email,
-      avatar: user.avatar || "👤",
-    });
-    setIsEditing(false);
+  const handlePreferenceChange = (key: string, value: boolean) => {
+    setPreferences((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const savePreferences = () => {
+    alert("✅ Preferencias guardadas correctamente");
   };
-
-  const mockOrders = [
-    { id: "1", date: new Date("2024-01-20"), total: 299.99, status: "Entregado", items: 3 },
-    { id: "2", date: new Date("2024-01-15"), total: 149.5, status: "En tránsito", items: 2 },
-    { id: "3", date: new Date("2024-01-10"), total: 89.99, status: "Procesando", items: 1 },
-    { id: "4", date: new Date("2024-01-05"), total: 199.99, status: "Entregado", items: 4 },
-  ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl">
-                {user.avatar || "👤"}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">{user.name}</h1>
-                <p className="text-blue-100">{user.email}</p>
-                <p className="text-blue-200 text-sm">
-                  {user.role} • Miembro desde {user.stats ? formatDate(user.stats.joinDate) : "N/A"}
-                </p>
-              </div>
+    <div className="user-container">
+      {/* Header del perfil */}
+      <div className="user-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+          <div className="user-avatar">
+            {user.avatar}
+          </div>
+          
+          <div style={{ flex: '1', minWidth: '250px' }}>
+            <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
+              {user.name}
+            </h1>
+            <p style={{ fontSize: '1.1rem', opacity: '0.9', marginBottom: '1rem' }}>
+              {user.email}
+            </p>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              display: 'inline-block',
+              fontWeight: '500'
+            }}>
+              ⭐ {user.role}
             </div>
-
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors"
-              >
-                ✏️ Editar
-              </button>
-              <button
-                onClick={onLogout}
-                className="bg-red-500/80 hover:bg-red-600 px-4 py-2 rounded-lg transition-colors"
-              >
-                🚪 Cerrar Sesión
-              </button>
+          </div>
+          
+          <div>
+            <div style={{
+              background: 'var(--purple-100)',
+              color: 'var(--purple-700)',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              border: '1px solid var(--purple-200)'
+            }}>
+              👤 User Microfrontend • Puerto 5004
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Navigation Tabs */}
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6">
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr',
+        gap: '1.5rem',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}>
+        {/* Información personal */}
+        <div className="settings-card">
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            marginBottom: '1.5rem'
+          }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--gray-900)' }}>
+              📝 Información Personal
+            </h3>
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              style={{
+                background: 'none',
+                border: '1px solid var(--purple-300)',
+                color: 'var(--purple-600)',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem'
+              }}
+            >
+              {isEditing ? "❌ Cancelar" : "✏️ Editar"}
+            </button>
+          </div>
+
+          {isEditing ? (
+            <div>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+                gap: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div>
+                  <label style={{ 
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'var(--gray-700)',
+                    marginBottom: '0.5rem'
+                  }}>
+                    Nombre completo
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="input"
+                    placeholder="Tu nombre completo"
+                  />
+                </div>
+                <div>
+                  <label style={{ 
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'var(--gray-700)',
+                    marginBottom: '0.5rem'
+                  }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="input"
+                    placeholder="tu@email.com"
+                  />
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <button onClick={handleSave} className="btn btn-primary">
+                  ✅ Guardar cambios
+                </button>
+                <button 
+                  onClick={() => setIsEditing(false)}
+                  style={{
+                    background: 'var(--gray-100)',
+                    color: 'var(--gray-700)',
+                    border: '1px solid var(--gray-300)',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+              gap: '1rem'
+            }}>
+              <div style={{
+                background: 'var(--gray-50)',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                border: '1px solid var(--gray-200)'
+              }}>
+                <label style={{ 
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  color: 'var(--gray-500)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  Nombre completo
+                </label>
+                <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--gray-900)' }}>
+                  {user.name}
+                </p>
+              </div>
+              <div style={{
+                background: 'var(--gray-50)',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                border: '1px solid var(--gray-200)'
+              }}>
+                <label style={{ 
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  color: 'var(--gray-500)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}>
+                  Email
+                </label>
+                <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--gray-900)' }}>
+                  {user.email}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Preferencias */}
+        <div className="settings-card">
+          <h3 style={{ 
+            fontSize: '1.25rem', 
+            fontWeight: '600', 
+            color: 'var(--gray-900)',
+            marginBottom: '1.5rem'
+          }}>
+            ⚙️ Preferencias de cuenta
+          </h3>
+
+          {/* Configuración general */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h4 style={{ 
+              fontSize: '1rem', 
+              fontWeight: '500',
+              color: 'var(--gray-900)',
+              marginBottom: '1rem'
+            }}>
+              🌐 Configuración general
+            </h4>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              gap: '1rem'
+            }}>
+              <div>
+                <label style={{ 
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: 'var(--gray-700)',
+                  marginBottom: '0.5rem'
+                }}>
+                  Idioma
+                </label>
+                <select
+                  className="select"
+                  value={preferences.language}
+                  onChange={(e) => setPreferences((prev) => ({ ...prev, language: e.target.value }))}
+                >
+                  <option value="es">🇪🇸 Español</option>
+                  <option value="en">🇺🇸 English</option>
+                  <option value="fr">🇫🇷 Français</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ 
+                  display: 'block',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: 'var(--gray-700)',
+                  marginBottom: '0.5rem'
+                }}>
+                  Tema
+                </label>
+                <select
+                  className="select"
+                  value={preferences.theme}
+                  onChange={(e) => setPreferences((prev) => ({ ...prev, theme: e.target.value }))}
+                >
+                  <option value="light">☀️ Claro</option>
+                  <option value="dark">🌙 Oscuro</option>
+                  <option value="auto">🔄 Automático</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Notificaciones */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h4 style={{ 
+              fontSize: '1rem', 
+              fontWeight: '500',
+              color: 'var(--gray-900)',
+              marginBottom: '1rem'
+            }}>
+              🔔 Notificaciones
+            </h4>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {[
+                {
+                  key: "notifications",
+                  title: "Notificaciones generales",
+                  description: "Recibe notificaciones sobre actividad de tu cuenta",
+                  icon: "🔔",
+                },
+                {
+                  key: "pushNotifications",
+                  title: "Notificaciones push",
+                  description: "Notificaciones instantáneas sobre pedidos y ofertas",
+                  icon: "📱",
+                },
+                {
+                  key: "emailUpdates",
+                  title: "Actualizaciones por email",
+                  description: "Recibe emails sobre el estado de tus pedidos",
+                  icon: "📧",
+                },
+                {
+                  key: "marketingEmails",
+                  title: "Emails promocionales",
+                  description: "Ofertas especiales y descuentos exclusivos",
+                  icon: "🎉",
+                },
+              ].map((pref) => (
+                <div
+                  key={pref.key}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '1rem',
+                    background: 'var(--gray-50)',
+                    borderRadius: '0.5rem',
+                    border: '1px solid var(--gray-200)'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ fontSize: '1.25rem' }}>{pref.icon}</div>
+                    <div>
+                      <h5 style={{ fontWeight: '500', color: 'var(--gray-900)', marginBottom: '0.25rem' }}>
+                        {pref.title}
+                      </h5>
+                      <p style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>
+                        {pref.description}
+                      </p>
+                    </div>
+                  </div>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={preferences[pref.key as keyof typeof preferences] as boolean}
+                      onChange={(e) => handlePreferenceChange(pref.key, e.target.checked)}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button onClick={savePreferences} className="btn btn-primary">
+            💾 Guardar preferencias
+          </button>
+        </div>
+
+        {/* Estadísticas y acciones */}
+        <div className="settings-card">
+          <h3 style={{ 
+            fontSize: '1.25rem', 
+            fontWeight: '600', 
+            color: 'var(--gray-900)',
+            marginBottom: '1.5rem'
+          }}>
+            📊 Resumen de cuenta
+          </h3>
+
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+            gap: '1rem',
+            marginBottom: '2rem'
+          }}>
             {[
-              { id: "profile", label: "👤 Perfil", count: null },
-              { id: "stats", label: "📊 Estadísticas", count: user.stats?.ordersCount },
-              { id: "orders", label: "📦 Pedidos", count: mockOrders.length },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
+              { label: "Pedidos", value: "12", icon: "📦", color: "var(--blue-600)" },
+              { label: "Favoritos", value: "8", icon: "❤️", color: "var(--red-500)" },
+              { label: "Puntos", value: "1,250", icon: "⭐", color: "var(--yellow-500)" },
+              { label: "Ahorrado", value: "$340", icon: "💰", color: "var(--green-500)" },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                style={{
+                  textAlign: 'center',
+                  padding: '1rem',
+                  background: 'var(--gray-50)',
+                  borderRadius: '0.5rem',
+                  border: '1px solid var(--gray-200)'
+                }}
               >
-                {tab.label}
-                {tab.count !== null && (
-                  <span className="ml-2 bg-gray-100 text-gray-600 py-1 px-2 rounded-full text-xs">{tab.count}</span>
-                )}
-              </button>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{stat.icon}</div>
+                <div style={{ fontSize: '1.25rem', fontWeight: '700', color: stat.color, marginBottom: '0.25rem' }}>
+                  {stat.value}
+                </div>
+                <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>
+                  {stat.label}
+                </div>
+              </div>
             ))}
-          </nav>
-        </div>
+          </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {activeTab === "profile" && (
-            <div className="space-y-6">
-              {!isEditing ? (
-                <>
-                  {/* Profile Display */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Nombre</label>
-                        <p className="mt-1 text-lg text-gray-900">{user.name}</p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <p className="mt-1 text-lg text-gray-900">{user.email}</p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Rol</label>
-                        <p className="mt-1">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              user.role === "Admin" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
-                            }`}
-                          >
-                            {user.role}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Preferencias</label>
-                        <div className="mt-2 space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Tema:</span>
-                            <span className="text-sm font-medium">{user.preferences?.theme || "No definido"}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Idioma:</span>
-                            <span className="text-sm font-medium">{user.preferences?.language || "No definido"}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-sm text-gray-600">Notificaciones:</span>
-                            <span className="text-sm font-medium">
-                              {user.preferences?.notifications ? "✅ Activas" : "❌ Inactivas"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* Profile Edit */}
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Editar Perfil</h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                          <input
-                            type="text"
-                            value={editData.name}
-                            onChange={(e) => setEditData((prev) => ({ ...prev, name: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                          <input
-                            type="email"
-                            value={editData.email}
-                            onChange={(e) => setEditData((prev) => ({ ...prev, email: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">Avatar</label>
-                        <div className="grid grid-cols-4 gap-2">
-                          {avatarOptions.map((avatar) => (
-                            <button
-                              key={avatar}
-                              onClick={() => setEditData((prev) => ({ ...prev, avatar }))}
-                              className={`p-3 text-2xl border rounded-lg hover:bg-gray-50 transition-colors ${
-                                editData.avatar === avatar ? "border-blue-500 bg-blue-50" : "border-gray-200"
-                              }`}
-                            >
-                              {avatar}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-4">
-                      <button
-                        onClick={handleSave}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        Guardar
-                      </button>
-                      <button
-                        onClick={handleCancel}
-                        className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {activeTab === "stats" && user.stats && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Estadísticas</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-blue-50 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-600">{user.stats.ordersCount}</div>
-                  <div className="text-sm text-blue-800 mt-1">Pedidos Realizados</div>
-                </div>
-
-                <div className="bg-green-50 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-green-600">${user.stats.totalSpent.toFixed(2)}</div>
-                  <div className="text-sm text-green-800 mt-1">Total Gastado</div>
-                </div>
-
-                <div className="bg-purple-50 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-purple-600">
-                    {Math.ceil((Date.now() - user.stats.joinDate.getTime()) / (1000 * 60 * 60 * 24))}
-                  </div>
-                  <div className="text-sm text-purple-800 mt-1">Días como miembro</div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h4 className="font-semibold text-gray-900 mb-3">Información Adicional</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Fecha de registro:</span>
-                    <span className="font-medium">{formatDate(user.stats.joinDate)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Último acceso:</span>
-                    <span className="font-medium">{formatDate(user.stats.lastLogin)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Promedio por pedido:</span>
-                    <span className="font-medium">
-                      $
-                      {user.stats.ordersCount > 0
-                        ? (user.stats.totalSpent / user.stats.ordersCount).toFixed(2)
-                        : "0.00"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "orders" && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Historial de Pedidos</h3>
-
-              <div className="space-y-4">
-                {mockOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-gray-900">Pedido #{order.id}</p>
-                        <p className="text-sm text-gray-600">{formatDate(order.date)}</p>
-                        <p className="text-sm text-gray-600">{order.items} artículos</p>
-                      </div>
-
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-gray-900">${order.total}</p>
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            order.status === "Entregado"
-                              ? "bg-green-100 text-green-800"
-                              : order.status === "En tránsito"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {order.status}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Microfrontend indicator */}
-        <div className="bg-pink-100 border-t border-pink-200 p-3">
-          <div className="text-center text-xs text-pink-800">
-            🎯 User Profile Microfrontend - Puerto 5004 | Usuario: {user.name}
+          {/* Botón de cerrar sesión */}
+          <div style={{ textAlign: 'center' }}>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: 'var(--red-50)',
+                color: 'var(--red-600)',
+                border: '1px solid var(--red-200)',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '500'
+              }}
+            >
+              🚪 Cerrar sesión
+            </button>
           </div>
         </div>
       </div>

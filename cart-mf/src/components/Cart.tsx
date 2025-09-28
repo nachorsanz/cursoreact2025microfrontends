@@ -1,245 +1,370 @@
+/**
+ * 🛒 CART COMPONENT - CARRITO MODERNO Y FUNCIONAL
+ */
+
 import { useState, useEffect } from "react";
-import { CartItem } from "../types";
+import type { CartItem, CartSummary } from "../types";
 
 interface CartProps {
-  items: CartItem[];
-  isOpen?: boolean;
-  onClose?: () => void;
-  onUpdateQuantity?: (itemId: string, quantity: number) => void;
-  onRemoveItem?: (itemId: string) => void;
-  onCheckout?: (items: CartItem[]) => void;
+  items?: CartItem[];
+  onUpdateCart?: (items: CartItem[]) => void;
 }
 
-export default function Cart({
-  items,
-  isOpen = false,
-  onClose,
-  onUpdateQuantity,
-  onRemoveItem,
-  onCheckout,
-}: CartProps) {
-  const [animatedItems, setAnimatedItems] = useState<Set<string>>(new Set());
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
+export default function Cart({ items: propItems, onUpdateCart }: CartProps) {
+  const [cartItems, setCartItems] = useState<CartItem[]>(
+    propItems || [
+      {
+        id: 1,
+        productId: 1,
+        name: "MacBook Pro M3 Max",
+        price: 2999.99,
+        quantity: 1,
+        image: "💻",
+      },
+      {
+        id: 2,
+        productId: 2,
+        name: "iPhone 15 Pro Max",
+        price: 1199.99,
+        quantity: 2,
+        image: "📱",
+      },
+      {
+        id: 3,
+        productId: 3,
+        name: "AirPods Pro (2ª gen)",
+        price: 249.99,
+        quantity: 1,
+        image: "🎧",
+      },
+    ],
+  );
 
-  // Calcular totales
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = subtotal * 0.1; // 10% tax
-  const shipping = subtotal > 100 ? 0 : 15; // Free shipping over $100
-  const total = subtotal + tax + shipping;
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const [summary, setSummary] = useState<CartSummary>({
+    subtotal: 0,
+    tax: 0,
+    shipping: 0,
+    total: 0,
+    itemCount: 0,
+  });
 
-  // Animar items cuando cambian
+  // Calcular resumen cuando cambien los items
   useEffect(() => {
-    const newAnimated = new Set<string>();
-    items.forEach((item) => {
-      if (!animatedItems.has(item.id)) {
-        newAnimated.add(item.id);
-      }
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const tax = subtotal * 0.1;
+    const shipping = subtotal > 100 ? 0 : 15;
+    const itemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    setSummary({
+      subtotal,
+      tax,
+      shipping,
+      total: subtotal + tax + shipping,
+      itemCount,
     });
+  }, [cartItems]);
 
-    if (newAnimated.size > 0) {
-      setAnimatedItems((prev) => new Set([...prev, ...newAnimated]));
-      setTimeout(() => {
-        setAnimatedItems((prev) => {
-          const updated = new Set(prev);
-          newAnimated.forEach((id) => updated.delete(id));
-          return updated;
-        });
-      }, 500);
-    }
-  }, [items]);
-
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
-    if (newQuantity < 1) {
-      onRemoveItem?.(itemId);
+  const updateQuantity = (id: number, quantity: number) => {
+    if (quantity <= 0) {
+      const newItems = cartItems.filter((item) => item.id !== id);
+      setCartItems(newItems);
+      onUpdateCart?.(newItems);
     } else {
-      onUpdateQuantity?.(itemId, newQuantity);
+      const newItems = cartItems.map((item) => (item.id === id ? { ...item, quantity } : item));
+      setCartItems(newItems);
+      onUpdateCart?.(newItems);
     }
   };
 
-  const handleCheckout = async () => {
-    if (items.length === 0) return;
-
-    setIsCheckingOut(true);
-
-    // Simular proceso de checkout
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      onCheckout?.(items);
-      alert("¡Pedido realizado con éxito! 🎉");
-    } catch (error) {
-      alert("Error al procesar el pedido. Inténtalo de nuevo.");
-    } finally {
-      setIsCheckingOut(false);
-    }
+  const removeItem = (id: number) => {
+    const newItems = cartItems.filter((item) => item.id !== id);
+    setCartItems(newItems);
+    onUpdateCart?.(newItems);
   };
 
-  if (!isOpen) return null;
+  const handleCheckout = () => {
+    alert("🚀 ¡Demo completado! En una app real, esto procesaría el pago con el microfrontend de checkout.");
+  };
 
-  return (
-    <>
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300" onClick={onClose} />
-
-      {/* Cart Sidebar */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform transition-transform duration-300 overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">🛒 Carrito</h2>
-            <p className="text-sm text-gray-600">
-              {itemCount} {itemCount === 1 ? "artículo" : "artículos"}
-            </p>
-          </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
-            <span className="text-xl">✕</span>
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-container">
+        <div style={{ textAlign: 'center', padding: '4rem 0' }}>
+          <div style={{ fontSize: '4rem', marginBottom: '1rem', opacity: '0.5' }}>🛒</div>
+          <h2 className="cart-title">Carrito vacío</h2>
+          <p style={{ color: 'var(--gray-600)', marginBottom: '2rem', fontSize: '1.1rem' }}>
+            No tienes productos en tu carrito todavía
+          </p>
+          <button className="btn" style={{ 
+            background: 'var(--blue-600)', 
+            color: 'white',
+            padding: '1rem 2rem',
+            fontSize: '1rem'
+          }}>
+            🛍️ Explorar productos
           </button>
         </div>
+      </div>
+    );
+  }
 
-        {/* Cart Items */}
-        <div className="flex-1 overflow-y-auto">
-          {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center p-6">
-              <div className="text-6xl mb-4">🛒</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Tu carrito está vacío</h3>
-              <p className="text-gray-600 mb-4">Agrega algunos productos para comenzar</p>
-              <button
-                onClick={onClose}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Continúar Comprando
-              </button>
-            </div>
-          ) : (
-            <div className="p-4 space-y-4">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className={`bg-white border border-gray-200 rounded-lg p-4 transition-all duration-300 ${
-                    animatedItems.has(item.id) ? "animate-bounce" : ""
-                  }`}
-                >
-                  <div className="flex items-center space-x-4">
-                    {/* Product Image/Icon */}
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center">
-                      <span className="text-2xl">{item.image || "📦"}</span>
-                    </div>
+  return (
+    <div className="cart-container">
+      {/* Header del carrito */}
+      <div className="cart-header">
+        <h1 className="cart-title">🛒 Mi Carrito</h1>
+        <p style={{ color: 'var(--gray-600)', fontSize: '1.1rem' }}>
+          {summary.itemCount} producto{summary.itemCount !== 1 ? "s" : ""} en tu carrito
+        </p>
+        <div style={{
+          background: 'var(--blue-50)',
+          color: 'var(--blue-700)',
+          display: 'inline-block',
+          padding: '0.5rem 1rem',
+          borderRadius: '0.5rem',
+          fontSize: '0.875rem',
+          fontWeight: '500',
+          marginTop: '0.5rem',
+          border: '1px solid var(--blue-200)'
+        }}>
+          🛒 Cart Microfrontend • Puerto 5003
+        </div>
+      </div>
 
-                    {/* Product Details */}
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 text-sm">{item.name}</h4>
-                      <p className="text-gray-600 text-sm">${item.price.toFixed(2)} cada uno</p>
-
-                      {/* Quantity Controls */}
-                      <div className="flex items-center space-x-2 mt-2">
-                        <button
-                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                          className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
-                          disabled={item.quantity <= 1}
-                        >
-                          <span className="text-sm">−</span>
-                        </button>
-
-                        <span className="w-8 text-center font-semibold">{item.quantity}</span>
-
-                        <button
-                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                          className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
-                          disabled={item.maxQuantity && item.quantity >= item.maxQuantity}
-                        >
-                          <span className="text-sm">+</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Price and Remove */}
-                    <div className="text-right">
-                      <p className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
-                      <button
-                        onClick={() => onRemoveItem?.(item.id)}
-                        className="text-red-500 hover:text-red-700 text-sm mt-2 transition-colors"
-                      >
-                        🗑️ Eliminar
-                      </button>
-                    </div>
-                  </div>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr',
+        gap: '2rem',
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}>
+        {/* Lista de productos */}
+        <div>
+          {cartItems.map((item) => (
+            <div key={item.id} className="cart-item">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {/* Imagen del producto */}
+                <div style={{
+                  width: '4rem',
+                  height: '4rem',
+                  background: 'var(--gray-100)',
+                  borderRadius: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2rem',
+                  flexShrink: 0
+                }}>
+                  {item.image}
                 </div>
-              ))}
+
+                {/* Información del producto */}
+                <div style={{ flex: '1', minWidth: '0' }}>
+                  <h3 style={{ 
+                    fontSize: '1.1rem', 
+                    fontWeight: '600', 
+                    color: 'var(--gray-900)',
+                    marginBottom: '0.25rem'
+                  }}>
+                    {item.name}
+                  </h3>
+                  <p style={{ color: 'var(--gray-600)', fontSize: '0.9rem' }}>
+                    ${item.price.toFixed(2)} cada uno
+                  </p>
+                  <p style={{ color: 'var(--green-600)', fontSize: '0.8rem', fontWeight: '500' }}>
+                    ✅ En stock • Envío gratis
+                  </p>
+                </div>
+
+                {/* Controles de cantidad */}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.75rem',
+                  background: 'var(--gray-50)',
+                  padding: '0.5rem',
+                  borderRadius: '0.5rem'
+                }}>
+                  <button
+                    className="quantity-btn"
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    style={{ color: item.quantity <= 1 ? 'var(--gray-400)' : 'var(--red-500)' }}
+                  >
+                    −
+                  </button>
+                  <span style={{ 
+                    fontWeight: '600', 
+                    color: 'var(--gray-900)',
+                    minWidth: '2rem',
+                    textAlign: 'center'
+                  }}>
+                    {item.quantity}
+                  </span>
+                  <button
+                    className="quantity-btn"
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    style={{ color: 'var(--green-600)' }}
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Precio y eliminar */}
+                <div style={{ textAlign: 'right', minWidth: '100px' }}>
+                  <div style={{ 
+                    fontSize: '1.25rem', 
+                    fontWeight: '700', 
+                    color: 'var(--blue-600)',
+                    marginBottom: '0.5rem'
+                  }}>
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </div>
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--red-500)',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </div>
             </div>
-          )}
+          ))}
         </div>
 
-        {/* Footer with Totals and Checkout */}
-        {items.length > 0 && (
-          <div className="border-t border-gray-200 p-4 bg-gray-50">
-            {/* Order Summary */}
-            <div className="space-y-2 mb-4 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal:</span>
-                <span className="font-semibold">${subtotal.toFixed(2)}</span>
-              </div>
+        {/* Resumen del pedido */}
+        <div style={{
+          background: 'var(--gray-50)',
+          border: '1px solid var(--gray-200)',
+          borderRadius: '0.75rem',
+          padding: '1.5rem',
+          position: 'sticky',
+          top: '2rem'
+        }}>
+          <h3 style={{ 
+            fontSize: '1.25rem', 
+            fontWeight: '700', 
+            color: 'var(--gray-900)',
+            marginBottom: '1rem',
+            textAlign: 'center'
+          }}>
+            📋 Resumen del pedido
+          </h3>
 
-              <div className="flex justify-between">
-                <span className="text-gray-600">Impuestos:</span>
-                <span className="font-semibold">${tax.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-600">Envío:</span>
-                <span className="font-semibold">{shipping === 0 ? "Gratis" : `$${shipping.toFixed(2)}`}</span>
-              </div>
-
-              {shipping === 0 && (
-                <div className="text-green-600 text-xs">🚚 ¡Envío gratis por compras mayores a $100!</div>
-              )}
-
-              <div className="border-t border-gray-300 pt-2 flex justify-between text-lg font-bold">
-                <span>Total:</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              marginBottom: '0.5rem',
+              fontSize: '0.9rem'
+            }}>
+              <span style={{ color: 'var(--gray-600)' }}>Subtotal</span>
+              <span style={{ fontWeight: '500' }}>${summary.subtotal.toFixed(2)}</span>
             </div>
 
-            {/* Checkout Button */}
-            <button
-              onClick={handleCheckout}
-              disabled={isCheckingOut}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {isCheckingOut ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Procesando...</span>
-                </div>
-              ) : (
-                `Finalizar Compra - $${total.toFixed(2)}`
-              )}
-            </button>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              marginBottom: '0.5rem',
+              fontSize: '0.9rem'
+            }}>
+              <span style={{ color: 'var(--gray-600)' }}>Impuestos (10%)</span>
+              <span style={{ fontWeight: '500' }}>${summary.tax.toFixed(2)}</span>
+            </div>
 
-            {/* Security badges */}
-            <div className="flex items-center justify-center space-x-4 mt-3 text-xs text-gray-500">
-              <div className="flex items-center space-x-1">
-                <span>🔒</span>
-                <span>Seguro</span>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              marginBottom: '1rem',
+              fontSize: '0.9rem'
+            }}>
+              <span style={{ color: 'var(--gray-600)' }}>Envío</span>
+              <span style={{ 
+                fontWeight: '500',
+                color: summary.shipping === 0 ? 'var(--green-600)' : 'var(--gray-900)'
+              }}>
+                {summary.shipping === 0 ? "¡Gratis!" : `$${summary.shipping.toFixed(2)}`}
+              </span>
+            </div>
+
+            {summary.shipping === 0 && (
+              <div style={{
+                background: 'var(--green-50)',
+                border: '1px solid var(--green-200)',
+                borderRadius: '0.5rem',
+                padding: '0.75rem',
+                marginBottom: '1rem'
+              }}>
+                <div style={{ 
+                  fontSize: '0.875rem', 
+                  color: 'var(--green-700)',
+                  fontWeight: '500',
+                  textAlign: 'center'
+                }}>
+                  🎉 ¡Envío gratis por compras mayores a $100!
+                </div>
               </div>
-              <div className="flex items-center space-x-1">
-                <span>💳</span>
-                <span>SSL</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span>✅</span>
-                <span>Verificado</span>
-              </div>
+            )}
+
+            <div style={{
+              borderTop: '1px solid var(--gray-300)',
+              paddingTop: '1rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <span style={{ fontSize: '1.1rem', fontWeight: '600' }}>Total</span>
+              <span style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: '700',
+                color: 'var(--blue-600)'
+              }}>
+                ${summary.total.toFixed(2)}
+              </span>
             </div>
           </div>
-        )}
 
-        {/* Microfrontend indicator */}
-        <div className="bg-orange-100 border-t border-orange-200 p-2">
-          <div className="text-center text-xs text-orange-800">
-            🎯 Cart Microfrontend - Puerto 5003 | Items: {itemCount}
+          {/* Botones de acción */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <button 
+              onClick={handleCheckout} 
+              className="btn btn-success"
+              style={{ width: '100%', padding: '1rem', fontSize: '1rem' }}
+            >
+              🚀 Proceder al Checkout
+            </button>
+
+            <button 
+              className="btn btn-outline"
+              style={{ width: '100%' }}
+            >
+              ← Continuar comprando
+            </button>
+          </div>
+
+          {/* Trust badges */}
+          <div style={{ 
+            marginTop: '1rem', 
+            paddingTop: '1rem',
+            borderTop: '1px solid var(--gray-200)',
+            textAlign: 'center',
+            fontSize: '0.8rem',
+            color: 'var(--gray-500)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <span>🔒 Pago seguro</span>
+              <span>📦 Envío rápido</span>
+            </div>
+            <p>Compra 100% protegida con garantía de devolución</p>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, UserPreferences } from "../types";
+import type { User, UserPreferences } from "../types";
 
 interface UserSettingsProps {
   user: User;
@@ -13,6 +13,8 @@ export default function UserSettings({ user, onUpdatePreferences }: UserSettings
       language: "es",
       notifications: true,
       emailUpdates: false,
+      pushNotifications: true,
+      marketingEmails: false,
     },
   );
 
@@ -45,6 +47,8 @@ export default function UserSettings({ user, onUpdatePreferences }: UserSettings
         language: "es",
         notifications: true,
         emailUpdates: false,
+        pushNotifications: true,
+        marketingEmails: false,
       },
     );
     setHasChanges(false);

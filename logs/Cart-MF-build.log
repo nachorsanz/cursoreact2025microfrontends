@@ -1,0 +1,30 @@
+
+> cart-mf@0.0.0 build
+> tsc -b && vite build
+
+vite v7.1.7 building for production...
+transforming...
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+7  |  @tailwind utilities;
+8  |  
+9  |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 |  
+11 |  /* Variables consistentes */
+✓ 34 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                           0.45 kB │ gzip:  0.29 kB
+dist/assets/style-Pwyq6e6p.css                            3.85 kB │ gzip:  1.38 kB
+dist/assets/_commonjsHelpers-B85MJLTf.js                  0.18 kB │ gzip:  0.16 kB
+dist/assets/__federation_shared_react-BrALZ0a1.js         0.27 kB │ gzip:  0.19 kB
+dist/assets/__federation_shared_react-dom-B-igiCQ4.js     0.28 kB │ gzip:  0.20 kB
+dist/assets/jsx-runtime-XI9uIe3W.js                       1.69 kB │ gzip:  0.64 kB
+dist/assets/__federation_expose_CartButton-Bz-3IUkG.js    2.24 kB │ gzip:  0.87 kB
+dist/assets/remoteEntry.js                                3.68 kB │ gzip:  1.25 kB
+dist/assets/index-DPp_4SNT.js                             7.89 kB │ gzip:  2.08 kB
+dist/assets/__federation_expose_Cart-DzYbXX-Y.js         12.98 kB │ gzip:  2.64 kB
+dist/assets/__federation_fn_import-BbV1QEaY.js           14.14 kB │ gzip:  3.12 kB
+dist/assets/index-CIQ6_Rzc.js                            18.44 kB │ gzip:  4.63 kB
+dist/assets/index-CaGRc2MZ.js                           544.34 kB │ gzip: 95.94 kB
+✓ built in 594ms

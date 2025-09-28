@@ -1,7 +1,7 @@
 {
   "name": "microfrontends-demo",
   "version": "1.0.0",
-  "description": "🏗️ Proyecto completo de arquitectura de microfrontends con Vite Module Federation gestionado por Lerna",
+  "description": "Demo educativa de microfrontends con Module Federation",
   "private": true,
   "workspaces": [
     "shell",
@@ -11,39 +11,29 @@
     "user-mf"
   ],
   "scripts": {
-    "dev": "lerna run dev --parallel --scope='{shell,header-mf,products-mf,cart-mf,user-mf}'",
-    "dev:shell": "lerna run dev --scope=shell",
-    "dev:header": "lerna run dev --scope=header-mf",
-    "dev:products": "lerna run dev --scope=products-mf",
-    "dev:cart": "lerna run dev --scope=cart-mf",
-    "dev:user": "lerna run dev --scope=user-mf",
-    "build": "lerna run build --parallel",
-    "build:shell": "lerna run build --scope=shell",
-    "install:all": "npm install && npm run install:workspaces",
-    "install:workspaces": "npm install --workspaces",
-    "clean": "lerna clean -y && lerna exec -- rm -rf dist",
+    "dev": "npm run start-demo",
+    "start-demo": "./start-clean.sh",
+    "build-all": "lerna run build",
     "start": "npm run dev",
-    "stop": "lerna exec -- pkill -f 'vite.*dev'",
-    "status": "lerna ls --all",
-    "test": "lerna run test"
-  },
-  "keywords": [
-    "microfrontends",
-    "vite",
-    "module-federation",
-    "react",
-    "lerna",
-    "monorepo",
-    "architecture",
-    "enterprise"
-  ],
-  "author": "Nacho RS (@nachorsanz)",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "clean": "./stop-all.sh && npm run clean:logs",
+    "clean:logs": "rm -rf logs/*.log logs/*.pid",
+    "status": "./check-status.sh"
   },
   "devDependencies": {
     "lerna": "^9.0.0"
-  }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "author": "Nacho RS",
+  "license": "MIT",
+  "keywords": [
+    "microfrontends",
+    "module-federation",
+    "vite",
+    "react",
+    "demo",
+    "educativo"
+  ]
 }

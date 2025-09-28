@@ -1,23 +1,17 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
   avatar?: string;
-  role?: string;
+  role: string;
   preferences?: UserPreferences;
-  stats?: UserStats;
 }
 
 export interface UserPreferences {
-  theme: "light" | "dark" | "auto";
-  language: string;
+  theme: string;
   notifications: boolean;
+  language: string;
   emailUpdates: boolean;
-}
-
-export interface UserStats {
-  ordersCount: number;
-  totalSpent: number;
-  joinDate: Date;
-  lastLogin: Date;
+  pushNotifications: boolean;
+  marketingEmails: boolean;
 }

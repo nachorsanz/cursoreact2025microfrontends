@@ -1,15 +1,14 @@
 /**
- * Header Microfrontend Component
- * Componente de navegación principal expuesto como microfrontend
+ * 📋 HEADER COMPONENT - NAVEGACIÓN MODERNA
  */
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface User {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
+  avatar: string;
 }
 
 interface HeaderProps {
@@ -17,220 +16,287 @@ interface HeaderProps {
   user?: User;
 }
 
-export default function Header({ onMenuClick, user }: HeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [notifications, setNotifications] = useState<number>(3);
-  const [currentTime, setCurrentTime] = useState(new Date());
+export default function Header({ onMenuClick, user }: HeaderProps = {}) {
+  const [activeNav, setActiveNav] = useState("home");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // Actualizar la hora cada segundo
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+  const navItems = [
+    { id: "home", label: "Inicio", icon: "🏠" },
+    { id: "products", label: "Productos", icon: "🛍️" },
+    { id: "categories", label: "Categorías", icon: "📂" },
+    { id: "offers", label: "Ofertas", icon: "🏷️" },
+  ];
 
-    return () => clearInterval(timer);
-  }, []);
+  const notifications = [
+    { id: 1, title: "Pedido enviado", desc: "Tu pedido #1234 está en camino", time: "hace 2h", icon: "📦" },
+    { id: 2, title: "Oferta especial", desc: "50% de descuento en accesorios", time: "hace 4h", icon: "🎉" },
+    { id: 3, title: "Producto favorito", desc: "MacBook Pro con nuevo stock", time: "hace 1d", icon: "❤️" },
+  ];
 
-  const handleNotificationClick = () => {
-    setNotifications(0);
-    // Aquí podrías abrir un panel de notificaciones
-    console.log("Opening notifications panel...");
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      alert(`🔍 Buscando: "${searchQuery}" (funcionalidad demo)`);
+    }
   };
 
-  const toggleMobileMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const handleProfileAction = (action: string) => {
+    setIsProfileOpen(false);
+    alert(`🎯 Acción: ${action} (funcionalidad demo)`);
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo y navegación principal */}
-          <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
-              <div className="text-2xl font-bold text-blue-600 mr-4">🚀 MicroStore</div>
-            </div>
+    <div className="header-main">
+      <div className="header-content">
+        {/* Logo y navegación */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <div className="logo">
+            <span style={{ fontSize: '2rem' }}>🛒</span>
+            <span>MicroStore</span>
+          </div>
 
-            <nav className="hidden md:ml-6 md:flex md:space-x-8">
+          <div style={{
+            background: 'var(--blue-50)',
+            color: 'var(--blue-700)',
+            padding: '0.25rem 0.75rem',
+            borderRadius: '0.5rem',
+            fontSize: '0.75rem',
+            fontWeight: '500',
+            border: '1px solid var(--blue-200)'
+          }}>
+            📋 Header MF • 5001
+          </div>
+
+          {/* Navegación principal - Desktop */}
+          <nav className="nav-links">
+            {navItems.map((item) => (
               <button
-                onClick={onMenuClick}
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                key={item.id}
+                onClick={() => setActiveNav(item.id)}
+                className={`nav-link ${activeNav === item.id ? "active" : ""}`}
               >
-                🏠 Inicio
+                <span style={{ marginRight: '0.5rem' }}>{item.icon}</span>
+                {item.label}
               </button>
+            ))}
+          </nav>
+        </div>
 
-              <button className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                🛍️ Productos
-              </button>
-
-              <button className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                📊 Analytics
-              </button>
-
-              <button className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                ⚙️ Configuración
-              </button>
-            </nav>
-          </div>
-
+        {/* Búsqueda y acciones */}
+        <div className="header-actions">
           {/* Barra de búsqueda */}
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-gray-400">🔍</span>
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar productos, usuarios, órdenes..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
+          <form onSubmit={handleSearch} className="search-container">
+            <div className="search-icon">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
-          </div>
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </form>
 
-          {/* Acciones de usuario */}
-          <div className="flex items-center space-x-4">
-            {/* Reloj */}
-            <div className="hidden lg:flex items-center text-sm text-gray-600">
-              <span className="mr-2">⏰</span>
-              {currentTime.toLocaleTimeString()}
-            </div>
+          {/* Carrito */}
+          <button className="action-btn" title="Mi carrito">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m-.4-2l1.6 8m0 0h10m-10 0a1 1 0 102 0m8 0a1 1 0 102 0" />
+            </svg>
+            <span style={{ 
+              position: 'absolute',
+              top: '0.125rem',
+              right: '0.125rem',
+              background: 'var(--red-500)',
+              color: 'white',
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              borderRadius: '50%',
+              width: '1.25rem',
+              height: '1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid white'
+            }}>
+              3
+            </span>
+          </button>
 
-            {/* Notificaciones */}
+          {/* Notificaciones */}
+          <div style={{ position: 'relative' }}>
             <button
-              onClick={handleNotificationClick}
-              className="relative p-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
+              onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+              className="action-btn"
+              title="Notificaciones"
             >
-              <span className="text-lg">🔔</span>
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                  {notifications}
-                </span>
-              )}
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3-3V9a6 6 0 10-12 0v5l-3 3h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <div className="notification-dot"></div>
             </button>
 
-            {/* Usuario */}
-            {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="flex items-center space-x-3 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-semibold text-sm">
-                      {user.avatar || user.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <span className="hidden lg:block text-gray-700 font-medium">{user.name}</span>
-                  <span className="text-gray-400">{isMenuOpen ? "▲" : "▼"}</span>
-                </button>
-
-                {/* Dropdown menu */}
-                {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                    <div className="py-1">
-                      <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
-                        <p className="font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs">{user.email}</p>
+            {/* Dropdown de notificaciones */}
+            {isNotificationsOpen && (
+              <div className="dropdown-menu">
+                <div className="dropdown-header">
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--gray-900)' }}>
+                    Notificaciones
+                  </h3>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginTop: '0.25rem' }}>
+                    Tienes {notifications.length} nuevas
+                  </p>
+                </div>
+                
+                <div style={{ maxHeight: '16rem', overflowY: 'auto' }}>
+                  {notifications.map((notification) => (
+                    <div key={notification.id} className="dropdown-item">
+                      <div style={{ fontSize: '1.25rem' }}>{notification.icon}</div>
+                      <div style={{ flex: '1', minWidth: '0' }}>
+                        <h4 style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--gray-900)' }}>
+                          {notification.title}
+                        </h4>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--gray-600)', marginTop: '0.125rem' }}>
+                          {notification.desc}
+                        </p>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: '0.25rem' }}>
+                          {notification.time}
+                        </p>
                       </div>
-
-                      <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                        👤 Mi Perfil
-                      </button>
-
-                      <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                        ⚙️ Configuración
-                      </button>
-
-                      <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                        🎨 Tema
-                      </button>
-
-                      <hr className="border-gray-100" />
-
-                      <button className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors">
-                        🚪 Cerrar Sesión
-                      </button>
                     </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <button className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">
-                  Iniciar Sesión
-                </button>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
-                  Registrarse
-                </button>
+                  ))}
+                </div>
+                
+                <div style={{ 
+                  padding: '0.75rem 1rem',
+                  borderTop: '1px solid var(--gray-200)'
+                }}>
+                  <button 
+                    onClick={() => setIsNotificationsOpen(false)}
+                    style={{
+                      color: 'var(--blue-600)',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Ver todas →
+                  </button>
+                </div>
               </div>
             )}
-
-            {/* Menú móvil toggle */}
-            <button
-              onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <span className="text-lg">{isMenuOpen ? "✕" : "☰"}</span>
-            </button>
           </div>
+
+          {/* Perfil de usuario */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="profile-avatar"
+              title="Mi perfil"
+            >
+              {user?.avatar || "👤"}
+            </button>
+
+            {/* Dropdown de perfil */}
+            {isProfileOpen && (
+              <div className="dropdown-menu">
+                <div className="dropdown-header">
+                  <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--gray-900)' }}>
+                    {user?.name || "Nacho RS"}
+                  </p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
+                    {user?.email || "nacho@microstore.com"}
+                  </p>
+                  <span style={{
+                    display: 'inline-block',
+                    marginTop: '0.5rem',
+                    background: 'var(--yellow-100)',
+                    color: 'var(--yellow-600)',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '500'
+                  }}>
+                    ⭐ Premium
+                  </span>
+                </div>
+                
+                {[
+                  { icon: "👤", label: "Mi perfil", action: "profile" },
+                  { icon: "📋", label: "Mis pedidos", action: "orders" },
+                  { icon: "❤️", label: "Favoritos", action: "favorites" },
+                  { icon: "⚙️", label: "Configuración", action: "settings" },
+                ].map((item) => (
+                  <button
+                    key={item.action}
+                    onClick={() => handleProfileAction(item.action)}
+                    className="dropdown-item"
+                    style={{ 
+                      width: '100%',
+                      textAlign: 'left',
+                      border: 'none',
+                      background: 'none'
+                    }}
+                  >
+                    <div style={{ fontSize: '1.125rem' }}>{item.icon}</div>
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+                
+                <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '0.5rem' }}>
+                  <button
+                    onClick={() => handleProfileAction("logout")}
+                    className="dropdown-item danger"
+                    style={{ 
+                      width: '100%',
+                      textAlign: 'left',
+                      border: 'none',
+                      background: 'none'
+                    }}
+                  >
+                    <div style={{ fontSize: '1.125rem' }}>🚪</div>
+                    <span>Cerrar sesión</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Menú móvil */}
+          <button 
+            onClick={() => onMenuClick?.()}
+            className="action-btn"
+            style={{ display: 'none' }}
+            title="Menú"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Menú móvil */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-white shadow-lg">
-            {/* Barra de búsqueda móvil */}
-            <div className="px-3 py-2">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-400">🔍</span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Buscar..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Enlaces de navegación móvil */}
-            <button
-              onClick={onMenuClick}
-              className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-            >
-              🏠 Inicio
-            </button>
-
-            <button className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors">
-              🛍️ Productos
-            </button>
-
-            <button className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors">
-              📊 Analytics
-            </button>
-
-            <button className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors">
-              ⚙️ Configuración
-            </button>
-
-            {/* Información de usuario en móvil */}
-            {user && (
-              <div className="border-t border-gray-200 pt-2 mt-2">
-                <div className="px-3 py-2">
-                  <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                  <p className="text-xs text-gray-500">{user.email}</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+      {/* Overlay para cerrar dropdowns */}
+      {(isProfileOpen || isNotificationsOpen) && (
+        <div 
+          style={{
+            position: 'fixed',
+            inset: '0',
+            zIndex: 40,
+            background: 'transparent'
+          }}
+          onClick={() => {
+            setIsProfileOpen(false);
+            setIsNotificationsOpen(false);
+          }}
+        />
       )}
-
-      {/* Indicador de microfrontend (solo para desarrollo) */}
-      <div className="bg-green-100 border-l-4 border-green-500 p-2">
-        <div className="text-xs text-green-800 text-center">🎯 Header Microfrontend - Puerto 5001</div>
-      </div>
-    </header>
+    </div>
   );
 }

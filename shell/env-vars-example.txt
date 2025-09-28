@@ -1,0 +1,25 @@
+# 📝 Variables de Entorno para Vercel - Shell Project
+# Copia estas variables en Vercel Dashboard > Settings > Environment Variables
+# Reemplaza "your-username" con tu usuario de Vercel
+
+# URLs de los Microfrontends en producción
+VITE_HEADER_MF_URL=https://header-mf-your-username.vercel.app
+VITE_PRODUCTS_MF_URL=https://products-mf-your-username.vercel.app
+VITE_CART_MF_URL=https://cart-mf-your-username.vercel.app
+VITE_USER_MF_URL=https://user-mf-your-username.vercel.app
+
+# Environment
+NODE_ENV=production
+
+# Instrucciones:
+# 1. Ve a Vercel Dashboard
+# 2. Selecciona tu proyecto "shell"
+# 3. Ve a Settings > Environment Variables
+# 4. Añade cada variable con su valor
+# 5. Redeploy el proyecto para aplicar cambios
+
+# Ejemplo de URLs reales (reemplaza "nachorsanz" con tu usuario):
+# VITE_HEADER_MF_URL=https://header-mf-nachorsanz.vercel.app
+# VITE_PRODUCTS_MF_URL=https://products-mf-nachorsanz.vercel.app
+# VITE_CART_MF_URL=https://cart-mf-nachorsanz.vercel.app
+# VITE_USER_MF_URL=https://user-mf-nachorsanz.vercel.app

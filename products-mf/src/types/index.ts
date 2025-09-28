@@ -15,9 +15,13 @@ export interface Product {
 }
 
 export interface ProductFilters {
-  category?: string;
-  priceRange?: [number, number];
-  inStockOnly?: boolean;
-  minRating?: number;
-  search?: string;
+  category: string;
+  search: string;
+  priceRange: [number, number];
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
 }

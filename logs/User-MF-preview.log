@@ -1,0 +1,14 @@
+
+> user-mf@0.0.0 preview
+> vite preview --port 5004 --host
+
+
+✘ vite v7.1.7 is not yet supported in the Community edition of Console Ninja.
+We are working hard on it for you https://tinyurl.com/3h9mtwra.
+
+Estimated release dates:
+  - Community users: around 22nd November, 2025 (subject to team availability)
+  - PRO users:       priority access is available now
+
+  ➜  Local:   http://localhost:5004/
+  ➜  Network: http://192.168.1.150:5004/

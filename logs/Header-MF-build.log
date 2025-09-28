@@ -1,0 +1,28 @@
+
+> header-mf@0.0.0 build
+> tsc -b && vite build
+
+vite v7.1.7 building for production...
+transforming...
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+7  |  @tailwind utilities;
+8  |  
+9  |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 |  
+11 |  /* Variables consistentes */
+✓ 34 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                          0.46 kB │ gzip:  0.30 kB
+dist/assets/style-BYeH-54n.css                           4.12 kB │ gzip:  1.59 kB
+dist/assets/_commonjsHelpers-B85MJLTf.js                 0.18 kB │ gzip:  0.16 kB
+dist/assets/__federation_shared_react-BrALZ0a1.js        0.27 kB │ gzip:  0.19 kB
+dist/assets/__federation_shared_react-dom-B-igiCQ4.js    0.28 kB │ gzip:  0.20 kB
+dist/assets/remoteEntry.js                               3.40 kB │ gzip:  1.21 kB
+dist/assets/index-DPp_4SNT.js                            7.89 kB │ gzip:  2.08 kB
+dist/assets/__federation_expose_Header-DeywJiQH.js      14.13 kB │ gzip:  3.25 kB
+dist/assets/__federation_fn_import-BbV1QEaY.js          14.14 kB │ gzip:  3.12 kB
+dist/assets/index-CIQ6_Rzc.js                           18.44 kB │ gzip:  4.63 kB
+dist/assets/index-Cz_hIk_V.js                          548.39 kB │ gzip: 96.84 kB
+✓ built in 763ms

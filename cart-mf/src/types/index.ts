@@ -1,15 +1,16 @@
 export interface CartItem {
-  id: string;
+  id: number;
+  productId: number;
   name: string;
   price: number;
   quantity: number;
-  image?: string;
-  maxQuantity?: number;
+  image: string;
 }
 
-export interface CartState {
-  items: CartItem[];
+export interface CartSummary {
   total: number;
+  subtotal: number;
+  tax: number;
+  shipping: number;
   itemCount: number;
-  isOpen: boolean;
 }

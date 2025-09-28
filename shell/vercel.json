@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "env": {
+    "NODE_ENV": "production",
+    "VITE_HEADER_MF_URL": "https://header-mf-your-team.vercel.app",
+    "VITE_PRODUCTS_MF_URL": "https://products-mf-your-team.vercel.app",
+    "VITE_CART_MF_URL": "https://cart-mf-your-team.vercel.app",
+    "VITE_USER_MF_URL": "https://user-mf-your-team.vercel.app"
+  },
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}

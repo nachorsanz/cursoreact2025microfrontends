@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: "productsMf",
+      name: "productMf",
       filename: "remoteEntry.js",
       exposes: {
         "./ProductList": "./src/components/ProductList.tsx",
