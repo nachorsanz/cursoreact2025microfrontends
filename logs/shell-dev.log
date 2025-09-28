@@ -30,3 +30,27 @@ Estimated release dates:
    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 12 |  
 13 |  /* 🎨 VARIABLES GLOBALES */
+18:05:00 [vite] (client) hmr update /src/App.tsx, /src/index.css
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+9  |  
+10 |  /* 🎯 FUENTES MODERNAS */
+11 |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |  
+13 |  /* 🎨 VARIABLES GLOBALES */
+18:06:39 [vite] (client) hmr update /src/App.tsx, /src/index.css
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+9  |  
+10 |  /* 🎯 FUENTES MODERNAS */
+11 |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |  
+13 |  /* 🎨 VARIABLES GLOBALES */
+18:06:53 [vite] (client) hmr update /src/index.css
+[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+9  |  
+10 |  /* 🎯 FUENTES MODERNAS */
+11 |  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |  
+13 |  /* 🎨 VARIABLES GLOBALES */
